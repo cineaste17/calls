@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A message for you 💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background:
+      /* === 云朵 === */
+      /* 左边云 */
+      radial-gradient(ellipse 90px 38px  at 12%  19%, #fff  55%, transparent 100%),
+      radial-gradient(ellipse 60px 28px  at 17%  15%, #fff  60%, transparent 100%),
+      radial-gradient(ellipse 55px 24px  at  8%  23%, #fafafa 55%, transparent 100%),
+      radial-gradient(ellipse 70px 30px  at 19%  22%, #fff  45%, transparent 100%),
+      /* 中间云 */
+      radial-gradient(ellipse 110px 44px at 50%  12%, #fff  58%, transparent 100%),
+      radial-gradient(ellipse  75px 32px at 56%   8%, #fff  62%, transparent 100%),
+      radial-gradient(ellipse  65px 28px at 44%  15%, #f8f8f8 50%, transparent 100%),
+      radial-gradient(ellipse  80px 34px at 52%  17%, #fff  42%, transparent 100%),
+      /* 右边云 */
+      radial-gradient(ellipse  85px 36px at 80%  17%, #fff  56%, transparent 100%),
+      radial-gradient(ellipse  55px 25px at 86%  13%, #fff  60%, transparent 100%),
+      radial-gradient(ellipse  60px 26px at 75%  21%, #fafafa 50%, transparent 100%),
+      radial-gradient(ellipse  50px 22px at 83%  22%, #f5f5f5 45%, transparent 100%),
+      /* 远处小云 */
+      radial-gradient(ellipse  45px 18px at 32%  25%, rgba(255,255,255,0.7) 55%, transparent 100%),
+      radial-gradient(ellipse  38px 15px at 66%  22%, rgba(255,255,255,0.65) 55%, transparent 100%),
+
+      /* === 天空渐变 === */
+      linear-gradient(
+        to bottom,
+        #1a6ab5  0%,    /* 深蓝顶部 */
+        #3a8fd4  18%,
+        #5aaee8  35%,
+        #7ecbf5  50%,
+        #a8dcf7  56%,
+        #c8ecff  60%,   /* 接近地平线变浅 */
+        /* 地平线过渡 */
+        #d6eecc  62%,
+        /* === 草地 === */
+        #6dc520  63%,
+        #58b018  68%,
+        #46980e  76%,
+        #367a0a  88%,
+        #2a6008 100%
+      );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'MS Sans Serif', 'Tahoma', Arial, sans-serif;
+    font-size: 11px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 山丘轮廓 —— 那个标志性的圆润小山 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      /* 主山丘（中左，Bliss标志性隆起） */
+      radial-gradient(ellipse 90% 38% at 35% 100%, #5cb81a 50%, transparent 68%),
+      /* 右侧山丘 */
+      radial-gradient(ellipse 70% 28% at 80% 100%, #52aa14 50%, transparent 68%),
+      /* 左侧远山 */
+      radial-gradient(ellipse 50% 20% at  5% 100%, #4a9e10 45%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Desktop icons */
+  .desktop-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+    text-align: center;
+    width: 64px;
+    font-size: 11px;
+    text-shadow: 1px 1px 2px black;
+    cursor: default;
+    z-index: 10;
+  }
+  .desktop-icon .icon { font-size: 32px; display: block; }
+
+  /* Taskbar */
+  .taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, #d4d0c8, #c2bfb8);
+    border-top: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    z-index: 9999;
+    box-shadow: 0 -1px 0 #888;
+  }
+  .start-btn {
+    background: linear-gradient(to bottom, #4a8a4a, #316a31);
+    color: white;
+    border: none;
+    padding: 2px 8px 2px 4px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    height: 22px;
+    border-radius: 2px 8px 8px 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.3), 1px 1px 0 rgba(0,0,0,0.3);
+  }
+  .start-btn span { font-size: 14px; }
+  .taskbar-clock {
+    margin-left: auto;
+    background: linear-gradient(to bottom, #c2bfb8, #d4d0c8);
+    border: 1px inset #888;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    height: 22px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Window */
+  .window {
+    background: #d4d0c8;
+    border: 2px solid #fff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    box-shadow: inset -1px -1px 0 #000, 2px 2px 0 #000, 4px 4px 8px rgba(0,0,0,0.4);
+    width: 360px;
+    position: relative;
+    animation: windowOpen 0.15s ease-out;
+    transform-origin: top left;
+    z-index: 10;
+  }
+
+  @keyframes windowOpen {
+    from { transform: scale(0.85); opacity: 0.5; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Title bar */
+  .titlebar {
+    background: linear-gradient(to right, #003087, #1084d0, #6eb5f5);
+    padding: 3px 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
+    cursor: default;
+  }
+  .titlebar-icon { font-size: 14px; }
+  .titlebar-text {
+    color: white;
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    flex: 1;
+  }
+  .window-btn {
+    width: 16px;
+    height: 14px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: 'Marlett', 'Wingdings', sans-serif;
+    color: white;
+    text-shadow: none;
+  }
+  .btn-min { background: linear-gradient(to bottom, #4a9de8, #2a7dc8); }
+  .btn-max { background: linear-gradient(to bottom, #4a9de8, #2a7dc8); }
+  .btn-close { background: linear-gradient(to bottom, #e84a4a, #c82a2a); }
+  .btn-close:hover { background: linear-gradient(to bottom, #ff6060, #e03030); }
+
+  /* Window content */
+  .window-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Message area */
+  .msg-area {
+    background: white;
+    border: 2px inset #888;
+    border-color: #848484 #dfdfdf #dfdfdf #848484;
+    padding: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 80px;
+  }
+
+  .msg-icon {
+    font-size: 36px;
+    line-height: 1;
+    flex-shrink: 0;
+    animation: iconPop 0.4s ease-out 0.2s both;
+  }
+  @keyframes iconPop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .msg-text-area {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .msg-from {
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 10px;
+    color: #555;
+  }
+
+  .msg-text {
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    line-height: 1.4;
+  }
+
+  .typing-dots {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    height: 16px;
+  }
+  .dot {
+    width: 5px;
+    height: 5px;
+    background: #888;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-4px); }
+  }
+
+  /* Separator */
+  .separator {
+    border: none;
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid #fff;
+    margin: 0;
+  }
+
+  /* Button row */
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 4px;
+    min-height: 36px;
+  }
+
+  .choice-btn {
+    background: linear-gradient(to bottom, #ffffff, #d4d0c8);
+    border: 2px outset #fff;
+    border-color: #fff #808080 #808080 #fff;
+    padding: 4px 24px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    min-width: 80px;
+    height: 28px;
+    box-shadow: 1px 1px 0 #000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.05s;
+  }
+  .choice-btn:hover {
+    background: linear-gradient(to bottom, #f0eeea, #c8c4bc);
+  }
+  .choice-btn:active {
+    border-color: #808080 #fff #fff #808080;
+    box-shadow: none;
+    padding-top: 5px;
+    padding-left: 25px;
+  }
+  .choice-btn.yes {
+    font-weight: bold;
+    border: 2px solid #000080;
+  }
+  .choice-btn.yes:focus { outline: 1px dotted #000; outline-offset: -4px; }
+
+  #no-btn {
+    z-index: 10000;
+  }
+
+  /* Result message */
+  .result-msg {
+    text-align: center;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: -40px;
+  }
+  .result-msg.show { display: flex; }
+  .result-emoji { font-size: 32px; animation: pop 0.3s ease-out; }
+  @keyframes pop {
+    0% { transform: scale(0) rotate(-10deg); }
+    70% { transform: scale(1.2) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .result-text {
+    font-family: 'Tahoma', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000080;
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    animation: fall linear forwards;
+    z-index: 99999;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Status bar */
+  .statusbar {
+    background: #d4d0c8;
+    border-top: 1px solid #808080;
+    display: flex;
+    gap: 2px;
+    padding: 2px 4px;
+  }
+  .status-item {
+    border: 1px inset #808080;
+    border-color: #848484 #dfdfdf #dfdfdf #848484;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    color: #000;
+    flex: 1;
+  }
+
+  @keyframes floatEnv {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-8px) rotate(3deg); }
+  }
+
+  .taskbar-app {
+    height: 22px;
+    background: linear-gradient(to bottom, #e8e4dc, #c8c4bc);
+    border: 1px outset #888;
+    padding: 0 8px;
+    font-size: 11px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 4px;
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.6);
+  }
+</style>
+</head>
+<body>
+
+<div class="desktop-icon">
+  <span class="icon">💌</span>
+  Message
+</div>
+
+<div class="window" id="mainWindow">
+  <!-- Title Bar -->
+  <div class="titlebar">
+    <span class="titlebar-icon">💬</span>
+    <span class="titlebar-text">Windows Messenger</span>
+    <div class="window-btn btn-min">_</div>
+    <div class="window-btn btn-max">□</div>
+    <div class="window-btn btn-close">✕</div>
+  </div>
+
+  <!-- Envelope screen -->
+  <div id="envelopeScreen" class="window-content" style="text-align:center; padding: 24px 16px;">
+    <div style="font-size:11px; font-family:Tahoma,Arial,sans-serif; color:#555; margin-bottom:12px;">
+      You have 1 new message
+    </div>
+    <div id="envelope" onclick="openMessage()" style="font-size:56px; cursor:pointer; display:inline-block; animation: floatEnv 2s ease-in-out infinite; user-select:none;" title="Click to open">💌</div>
+    <div style="font-size:10px; font-family:Tahoma,Arial,sans-serif; color:#888; margin-top:8px;">click to open</div>
+  </div>
+
+  <!-- Main content (hidden until envelope opened) -->
+  <div id="mainContent" style="display:none">
+    <!-- Content -->
+    <div class="window-content">
+      <div class="msg-area">
+        <div class="msg-icon">🥺</div>
+        <div class="msg-text-area">
+          <div class="msg-from">Someone special (Online) says:</div>
+          <div class="msg-text" id="missText" style="display:none">I really miss you.</div>
+          <div class="msg-text" id="msgText" style="display:none; margin-top:4px;">Can I call you tonight?</div>
+          <div class="typing-dots" id="typingDots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="separator">
+
+      <!-- Buttons -->
+      <div class="btn-row" id="btnRow" style="display:none">
+        <button class="choice-btn yes" id="yes-btn" onclick="handleYes()">Yes 💕</button>
+        <button class="choice-btn" id="no-btn" onmouseenter="runAway()" ontouchstart="runAway()">No</button>
+      </div>
+
+      <!-- Result (hidden initially) -->
+      <div class="result-msg" id="resultMsg">
+        <div class="result-emoji">🎉</div>
+        <div class="result-text">Yay! I'll call you tonight!! 📞💕</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="statusbar">
+    <div class="status-item">● Online</div>
+    <div class="status-item">Unread: 1</div>
+  </div>
+</div>
+
+<!-- Taskbar -->
+<div class="taskbar">
+  <button class="start-btn"><span>🪟</span> Start</button>
+  <div class="taskbar-app">💬 Windows Messenger</div>
+  <div class="taskbar-clock" id="clock">12:00 PM</div>
+</div>
+
+<script>
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    let h = now.getHours(), m = now.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('clock').textContent =
+      `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function openMessage() {
+    document.getElementById('envelopeScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    // First message: "I really miss you."
+    setTimeout(() => {
+      document.getElementById('typingDots').style.display = 'none';
+      document.getElementById('missText').style.display = 'block';
+
+      // Pause, then show typing dots again for second message
+      setTimeout(() => {
+        document.getElementById('typingDots').style.display = 'flex';
+
+        // Second message: "Can I call you tonight?"
+        setTimeout(() => {
+          document.getElementById('typingDots').style.display = 'none';
+          document.getElementById('msgText').style.display = 'block';
+
+          // Show buttons
+          setTimeout(() => {
+            document.getElementById('btnRow').style.display = 'flex';
+          }, 400);
+        }, 1600);
+      }, 800);
+    }, 1800);
+  }
+
+  // No button escape logic
+  const noBtn = document.getElementById('no-btn');
+  const btnRow = document.getElementById('btnRow');
+  let escapeCount = 0;
+  let escaped = false;
+
+  function runAway() {
+    escapeCount++;
+
+    // On first escape, record current position then switch to fixed
+    if (!escaped) {
+      escaped = true;
+      const rect = noBtn.getBoundingClientRect();
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = rect.left + 'px';
+      noBtn.style.top = rect.top + 'px';
+      noBtn.style.margin = '0';
+      // small delay so it paints in place first
+      setTimeout(teleport, 20);
+      return;
+    }
+    teleport();
+  }
+
+  function teleport() {
+    const margin = 60;
+    const maxX = window.innerWidth - noBtn.offsetWidth - margin;
+    const maxY = window.innerHeight - noBtn.offsetHeight - margin - 30;
+
+    const win = document.getElementById('mainWindow').getBoundingClientRect();
+    let newX, newY, attempts = 0;
+    do {
+      newX = margin + Math.random() * maxX;
+      newY = margin + Math.random() * maxY;
+      attempts++;
+    } while (
+      attempts < 20 &&
+      newX > win.left - 20 && newX < win.right + 20 &&
+      newY > win.top - 20 && newY < win.bottom + 20
+    );
+
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+
+    const labels = ['No!', 'Nope', 'No~', '🚫 No', 'Nooo', 'Nah', 'Never!', '...No'];
+    if (escapeCount % 3 === 0) {
+      noBtn.textContent = labels[Math.floor(Math.random() * labels.length)];
+    }
+  }
+
+  function handleYes() {
+    noBtn.style.display = 'none';
+    document.getElementById('yes-btn').style.display = 'none';
+    document.getElementById('resultMsg').classList.add('show');
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const colors = ['#ff6b9d','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8','#f06595'];
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        c.style.animationDelay = (Math.random() * 0.5) + 's';
+        c.style.transform = `rotate(${Math.random()*360}deg)`;
+        c.style.width = (6 + Math.random() * 8) + 'px';
+        c.style.height = (6 + Math.random() * 8) + 'px';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 30);
+    }
+  }
+
+  // Touch support for no button
+  noBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    runAway();
+  }, { passive: false });
+</script>
+</body>
+</html>
